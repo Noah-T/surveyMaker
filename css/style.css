@@ -1,0 +1,24 @@
+body {
+	background-image: url('../img/hospital.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+h1 {
+	color: white;
+	font-family: verdana;
+}
+
+.question {
+	margin-top: 50px;
+	margin-bottom: 10px;
+}
+
+#handleSubmission, #createSurvey {
+	display: block;
+	margin: 34px auto;
+}
+
+.response {
+	margin-top: 10px;
+}
