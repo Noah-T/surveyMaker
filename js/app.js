@@ -1,5 +1,6 @@
-Parse.initialize("1kDKNEor4PV2rdxuDZNMvPrAPecBdvKvy9clcEKQ", "QKVPQUDwD5tkEe4HvF82yStWIObsyg2GVHRu66Q3");
+///CREATE SURVEYS
 
+Parse.initialize("1kDKNEor4PV2rdxuDZNMvPrAPecBdvKvy9clcEKQ", "QKVPQUDwD5tkEe4HvF82yStWIObsyg2GVHRu66Q3");
 
 
 $("#handleSubmission").hide();
@@ -79,7 +80,7 @@ function prepareAndSubmitForm(){
 	var survey = new Survey();
 
 	var children = $("#mainForm").find('.questionWrapper');
-	debugger;
+
 	for (var i = 0; i < children.length; i++) {
 			//get current question
 			var question = $(children[i]).children('.question').val();
@@ -88,16 +89,37 @@ function prepareAndSubmitForm(){
 			survey.set(questionNumber, question);
 			var responses = $(children[i]).find('.response');	
 			var responseValues = [];
-			for (var i = 0; i < responses.length; i++) {
-				responseValues.push($(responses[i]).val());
+			for (var j = 0; j < responses.length; j++) {
+				responseValues.push($(responses[j]).val());
 			};
 			survey.set(questionNumber + "Responses", responseValues);
+
 	};
 
 	
 	survey.set("title", $("#surveyName").val());
 	survey.save();
 
-
+	$.ajax({
+                    dataType: 'jsonp',
+                    data: { name: "Michelle", formID:"6", phoneNumber:"+19782890617"},                      
+                    jsonp: 'callback',
+                    url: 'http://localhost:9000/textme',                     
+                    success: function(data) {
+                        console.log('success');
+                        console.log(JSON.stringify(data));
+                    }
+                });
 }
 
+///GENERATE SURVEYS FOR USER AND ACCEPT INPUT
+var query = new Parse.Query("Survey");
+query.find({
+  success: function(results) {
+  	//Object.keys(results[i].toJSON());
+  },
+
+  error: function(error) {
+    // error is an instance of Parse.Error.
+  }
+});
