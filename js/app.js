@@ -118,28 +118,30 @@ var QuestionObjects = {};
 query.find({
   success: function(results) {
   	QuestionObjects = {};
-	QuestionObjects[results[0].id] = {};
+  	for (var l = 0; l < results.length; l++) {
 
-  	//this is hard coding, this needs to be changed
-  	
-  	QuestionObjects[results[0].id]["title"] = results[0].attributes.title;
-  	QuestionObjects[results[0].id]["questions"] = [];
-  	//loop through all results
-  	//create local objects with parse ID, title, questions, question answers, name, phoneNumber
+		QuestionObjects[results[l].id] = {};
+		QuestionObjects[results[l].id]["id"] = results[l].id;	
+	  	QuestionObjects[results[l].id]["title"] = results[l].attributes.title;
+	  	QuestionObjects[results[l].id]["questions"] = [];
+	  	//loop through all results
+	  	//create local objects with parse ID, title, questions, question answers, name, phoneNumber
 
-  	var questionKeys = Object.keys(results[0].toJSON());
-  	for (var i = 0; i < questionKeys.length; i++) {
-  		if(questionKeys[i].indexOf("question")>=0 && questionKeys[i].indexOf("Responses")<0){
-  			QuestionObjects[results[0].id]["questions"].push(questionKeys[i]);
-  		}
+	  	var questionKeys = Object.keys(results[l].toJSON());
+	  	for (var i = 0; i < questionKeys.length; i++) {
+	  		if(questionKeys[i].indexOf("question")>=0 && questionKeys[i].indexOf("Responses")<0){
+	  			QuestionObjects[results[l].id]["questions"].push(questionKeys[i]);
+	  		}
 
-  	}
-  	//get question responses
-  	debugger;
-  	for (var i = 0; i < QuestionObjects[results[0].id]["questions"].length; i++) {
-  		QuestionObjects[results[0].id]["question" + (i+1) + "Responses"] = results[0].attributes["question" + (i+1) + "Responses"];
-  	}
+	  	}
+	  	//get question responses
+	  	for (var i = 0; i < QuestionObjects[results[l].id]["questions"].length; i++) {
+	  		QuestionObjects[results[l].id]["question" + (i+1) + "Responses"] = results[0].attributes["question" + (i+1) + "Responses"];
+	  	}  	
 
+	  	};
+	
+	  	displaySurveyList();
   },
 
   error: function(error) {
@@ -147,6 +149,21 @@ query.find({
   }
 });
 
-function displayQuestionsInSurvey(){
+function displaySurveyList(){
+	var listOfSurveys = Object.keys(QuestionObjects);
+	for (var i = 0; i < listOfSurveys.length; i++) {	
+		debugger;
+		$("#takeSurveyList").append("<li class='surveyListItem' data-id='"+ QuestionObjects[listOfSurveys[i]]["id"]+"'>"+QuestionObjects[listOfSurveys[i]]["title"]+"</li>");
+	};
+}
+
+function displayIndividualSurvey(){
 
 }
+
+$(document.body).on('click', '.surveyListItem' ,function(){
+	$("#takeSurveyList").hide();
+	console.log("you clicked on: " + $(this).data("id") );
+	var theSurveyClickedOn = QuestionObjects[$(this).data("id")];
+	debugger;
+});

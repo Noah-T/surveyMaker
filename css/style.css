@@ -22,3 +22,10 @@ h1 {
 .response {
 	margin-top: 10px;
 }
+
+#takeSurveyList li{
+	list-style: none;
+	color: white;
+	text-align: center;
+	font-size: 2em;
+}
