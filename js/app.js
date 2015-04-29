@@ -114,12 +114,39 @@ function prepareAndSubmitForm(){
 
 ///GENERATE SURVEYS FOR USER AND ACCEPT INPUT
 var query = new Parse.Query("Survey");
+var QuestionObjects = {};
 query.find({
   success: function(results) {
-  	//Object.keys(results[i].toJSON());
+  	QuestionObjects = {};
+	QuestionObjects[results[0].id] = {};
+
+  	//this is hard coding, this needs to be changed
+  	
+  	QuestionObjects[results[0].id]["title"] = results[0].attributes.title;
+  	QuestionObjects[results[0].id]["questions"] = [];
+  	//loop through all results
+  	//create local objects with parse ID, title, questions, question answers, name, phoneNumber
+
+  	var questionKeys = Object.keys(results[0].toJSON());
+  	for (var i = 0; i < questionKeys.length; i++) {
+  		if(questionKeys[i].indexOf("question")>=0 && questionKeys[i].indexOf("Responses")<0){
+  			QuestionObjects[results[0].id]["questions"].push(questionKeys[i]);
+  		}
+
+  	}
+  	//get question responses
+  	debugger;
+  	for (var i = 0; i < QuestionObjects[results[0].id]["questions"].length; i++) {
+  		QuestionObjects[results[0].id]["question" + (i+1) + "Responses"] = results[0].attributes["question" + (i+1) + "Responses"];
+  	}
+
   },
 
   error: function(error) {
     // error is an instance of Parse.Error.
   }
 });
+
+function displayQuestionsInSurvey(){
+
+}
