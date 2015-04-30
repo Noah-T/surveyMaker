@@ -48,3 +48,9 @@ input[type="radio"] {
 	margin-left: 20px;
 	text-align: left;
 }
+
+.viewTakenSurveyWrapper {
+	width: 300px;
+	display: block;
+	margin: 0 auto;
+}
