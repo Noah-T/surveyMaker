@@ -100,16 +100,7 @@ function prepareAndSubmitForm(){
 	survey.set("title", $("#surveyName").val());
 	survey.save();
 
-	$.ajax({
-                    dataType: 'jsonp',
-                    data: { name: "Michelle", formID:"6", phoneNumber:"+19782890617"},                      
-                    jsonp: 'callback',
-                    url: 'http://localhost:9000/textme',                     
-                    success: function(data) {
-                        console.log('success');
-                        console.log(JSON.stringify(data));
-                    }
-                });
+	
 }
 
 ///GENERATE SURVEYS FOR USER AND ACCEPT INPUT
@@ -129,14 +120,17 @@ query.find({
 
 	  	var questionKeys = Object.keys(results[l].toJSON());
 	  	for (var i = 0; i < questionKeys.length; i++) {
+
 	  		if(questionKeys[i].indexOf("question")>=0 && questionKeys[i].indexOf("Responses")<0){
-	  			QuestionObjects[results[l].id]["questions"].push(questionKeys[i]);
+	  			QuestionObjects[results[l].id]["questions"].push(results[l].attributes[questionKeys[i]]);
 	  		}
 
 	  	}
+
 	  	//get question responses
 	  	for (var i = 0; i < QuestionObjects[results[l].id]["questions"].length; i++) {
-	  		QuestionObjects[results[l].id]["question" + (i+1) + "Responses"] = results[0].attributes["question" + (i+1) + "Responses"];
+	  		QuestionObjects[results[l].id]["question" + (i+1) + "Responses"] = results[l].attributes["question" + (i+1) + "Responses"];
+	  		debugger;
 	  	}  	
 
 	  	};
@@ -158,8 +152,7 @@ function displaySurveyList(){
 }
 
 function displayIndividualSurvey(survey){
-	console.log("hi from display survey");
-	
+	debugger;
 	//display all questions
 	var questions = survey.questions;
 	var questionsLength = survey.questions.length;
@@ -171,6 +164,9 @@ function displayIndividualSurvey(survey){
 			$("#takeSurveyForm").append("<div class='radioResponseWrap'><input id='"+ survey.questions[i]+responsesForQuestion[j] +"'' type='radio' name='"+survey.questions[i] +"' value='"+ responsesForQuestion[j]+"'><label class='radioLabel' for='"+ survey.questions[i]+responsesForQuestion[j] +"'>"+ responsesForQuestion[j]+"</label><br></div>");
 		 }
 	}
+	//add inputs for name and phone number
+	$("#takeSurveyForm").append("<input type='text' placeholder='First Name' id='firstName' class='form-control'>");
+	$("#takeSurveyForm").append("<input type='text' placeholder='Phone Number' id='phoneNumber' class='form-control'>");
 	$("#takeSurveyForm").append("<button id='submitSurveyResponse' class='btn btn-primary'>Submit</button>")
 
 }
@@ -183,6 +179,7 @@ $(document.body).on('click', '.surveyListItem' ,function(){
 
 });
 
+var surveyId = "";
 //submit survey after user has completed it
 $(document.body).on('click', '#submitSurveyResponse' ,function(e){
 	e.preventDefault();
@@ -204,6 +201,59 @@ $(document.body).on('click', '#submitSurveyResponse' ,function(e){
 
 	};
 
-	surveyResponse.save();
+	surveyResponse.save(null,{
+		success: function(surveyResponse){
+			console.log("That's a save!");
+			surveyId = surveyResponse.id;
+			var ajaxData = { name: $("#firstName").val(), formID:surveyId, phoneNumber:"+1" + $("#phoneNumber").val()};
 
+	$.ajax({
+        dataType: 'jsonp',
+        data: ajaxData,                      
+        jsonp: 'callback',
+        url: 'http://localhost:9000/textme',                     
+        success: function(data) {
+            console.log('success');
+            console.log(JSON.stringify(data));
+        }
+    });
+		},
+		error: function(error){
+			console.log("couldn't save " + error);
+		}
+		
+	});
+	
+	//send user SMS receipt after submitting response
+	
 });
+
+//look up previously taken survey
+$(document.body).on('click', '#findSurvey' ,function(){
+	var SurveyResponse = Parse.Object.extend("SurveyResponse");
+	var query = new Parse.Query(SurveyResponse);
+	query.get($("#idEntry").val(), {
+  success: function(object) {
+    // object is an instance of Parse.Object.
+
+    //display questions and user responses 
+    var objectAttributes = Object.keys(object.attributes);
+    var questions = [];
+
+    for (var i = 0; i < objectAttributes.length; i++) {
+    	debugger;
+    	if(objectAttributes[i].indexOf("question")>=0 && objectAttributes[i].indexOf("Response")<0){
+    		questions.push(objectAttributes[i]);
+    	}
+    }
+    debugger;
+  },
+
+  error: function(object, error) {
+    // error is an instance of Parse.Error.
+    console.log(error);
+  }
+});
+		
+});
+
