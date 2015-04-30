@@ -164,13 +164,14 @@ function displayIndividualSurvey(survey){
 	var questions = survey.questions;
 	var questionsLength = survey.questions.length;
 	for (var i = 0; i < questionsLength; i++) {
-		$("#takeSurveyForm").append("<h1>"+survey.questions[i]+"</h1>");
+		$("#takeSurveyForm").append("<h1 class='question'>"+survey.questions[i]+"</h1>");
 		var responsesForQuestion = survey["question" + (i+1)+"Responses"];
-		debugger;
+
 		 for (var j = 0; j < responsesForQuestion.length;  j++) {
 			$("#takeSurveyForm").append("<div class='radioResponseWrap'><input id='"+ survey.questions[i]+responsesForQuestion[j] +"'' type='radio' name='"+survey.questions[i] +"' value='"+ responsesForQuestion[j]+"'><label class='radioLabel' for='"+ survey.questions[i]+responsesForQuestion[j] +"'>"+ responsesForQuestion[j]+"</label><br></div>");
 		 }
-	};
+	}
+	$("#takeSurveyForm").append("<button id='submitSurveyResponse' class='btn btn-primary'>Submit</button>")
 
 }
 
@@ -179,5 +180,30 @@ $(document.body).on('click', '.surveyListItem' ,function(){
 	console.log("you clicked on: " + $(this).data("id") );
 	var theSurveyClickedOn = QuestionObjects[$(this).data("id")];
 	displayIndividualSurvey(theSurveyClickedOn);
+
+});
+
+//submit survey after user has completed it
+$(document.body).on('click', '#submitSurveyResponse' ,function(e){
+	e.preventDefault();
+
+	var SurveyResponse = Parse.Object.extend("SurveyResponse");
+	var surveyResponse = new SurveyResponse();
+	var questions = $("#takeSurveyForm").find('.question');
+	var questionValues = [];
+	for (var i = 0; i < questions.length; i++) {
+		questionValues.push($(questions[i]).text());
+		//set question to parse property
+
+	};
+	//record selected values for all 
+	for (var i = 0; i < questionValues.length; i++) {
+		 surveyResponse.set("question" +(i+1), questionValues[i]);
+		 surveyResponse.set("question" +(i+1) +"Response", $('input[name='+questionValues[i]+ ']:checked').val());
+		$('input[name='+questionValues[i]+ ']:checked').val()
+
+	};
+
+	surveyResponse.save();
 
 });
