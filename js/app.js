@@ -130,7 +130,7 @@ query.find({
 	  	//get question responses
 	  	for (var i = 0; i < QuestionObjects[results[l].id]["questions"].length; i++) {
 	  		QuestionObjects[results[l].id]["question" + (i+1) + "Responses"] = results[l].attributes["question" + (i+1) + "Responses"];
-	  		debugger;
+
 	  	}  	
 
 	  	};
@@ -196,8 +196,9 @@ $(document.body).on('click', '#submitSurveyResponse' ,function(e){
 	//record selected values for all 
 	for (var i = 0; i < questionValues.length; i++) {
 		 surveyResponse.set("question" +(i+1), questionValues[i]);
-		 surveyResponse.set("question" +(i+1) +"Response", $('input[name='+questionValues[i]+ ']:checked').val());
-		$('input[name='+questionValues[i]+ ']:checked').val()
+		 surveyResponse.set("question" +(i+1) +"Response", $("input[name='"+questionValues[i]+ "']:checked").val());
+
+		
 
 	};
 
@@ -241,7 +242,7 @@ $(document.body).on('click', '#findSurvey' ,function(){
     var questions = [];
 
     for (var i = 0; i < objectAttributes.length; i++) {
-    	debugger;
+
     	if(objectAttributes[i].indexOf("question")>=0 && objectAttributes[i].indexOf("Response")<0){
     		questions.push(objectAttributes[i]);
     	}
