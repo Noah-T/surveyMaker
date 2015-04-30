@@ -29,3 +29,22 @@ h1 {
 	text-align: center;
 	font-size: 2em;
 }
+
+#takeSurveyForm {
+	margin: 0 auto;
+	width: 400px;
+	text-align: center;
+}
+
+.radioLabel {
+	color: white;
+}
+
+input[type="radio"] {
+	margin-right: 10px;
+}
+
+.radioResponseWrap {
+	margin-left: 20px;
+	text-align: left;
+}

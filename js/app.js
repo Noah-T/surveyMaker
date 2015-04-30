@@ -152,12 +152,25 @@ query.find({
 function displaySurveyList(){
 	var listOfSurveys = Object.keys(QuestionObjects);
 	for (var i = 0; i < listOfSurveys.length; i++) {	
-		debugger;
+
 		$("#takeSurveyList").append("<li class='surveyListItem' data-id='"+ QuestionObjects[listOfSurveys[i]]["id"]+"'>"+QuestionObjects[listOfSurveys[i]]["title"]+"</li>");
 	};
 }
 
-function displayIndividualSurvey(){
+function displayIndividualSurvey(survey){
+	console.log("hi from display survey");
+	
+	//display all questions
+	var questions = survey.questions;
+	var questionsLength = survey.questions.length;
+	for (var i = 0; i < questionsLength; i++) {
+		$("#takeSurveyForm").append("<h1>"+survey.questions[i]+"</h1>");
+		var responsesForQuestion = survey["question" + (i+1)+"Responses"];
+		debugger;
+		 for (var j = 0; j < responsesForQuestion.length;  j++) {
+			$("#takeSurveyForm").append("<div class='radioResponseWrap'><input id='"+ survey.questions[i]+responsesForQuestion[j] +"'' type='radio' name='"+survey.questions[i] +"' value='"+ responsesForQuestion[j]+"'><label class='radioLabel' for='"+ survey.questions[i]+responsesForQuestion[j] +"'>"+ responsesForQuestion[j]+"</label><br></div>");
+		 }
+	};
 
 }
 
@@ -165,5 +178,6 @@ $(document.body).on('click', '.surveyListItem' ,function(){
 	$("#takeSurveyList").hide();
 	console.log("you clicked on: " + $(this).data("id") );
 	var theSurveyClickedOn = QuestionObjects[$(this).data("id")];
-	debugger;
+	displayIndividualSurvey(theSurveyClickedOn);
+
 });
