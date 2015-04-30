@@ -152,7 +152,7 @@ function displaySurveyList(){
 }
 
 function displayIndividualSurvey(survey){
-	debugger;
+
 	//display all questions
 	var questions = survey.questions;
 	var questionsLength = survey.questions.length;
@@ -247,7 +247,7 @@ $(document.body).on('click', '#findSurvey' ,function(){
     		questions.push(objectAttributes[i]);
     	}
     }
-    debugger;
+
   },
 
   error: function(object, error) {
